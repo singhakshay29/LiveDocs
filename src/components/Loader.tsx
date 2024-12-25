@@ -1,0 +1,19 @@
+import Image from "next/image";
+import React from "react";
+
+const Loader = () => {
+  return (
+    <div className="loder">
+      <Image
+        src="/assest/icons/loader.svg"
+        alt="loader"
+        width={32}
+        height={32}
+        className="animate-spin"
+      />
+      Loading...
+    </div>
+  );
+};
+
+export default Loader;

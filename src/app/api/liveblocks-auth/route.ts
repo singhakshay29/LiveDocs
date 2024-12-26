@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 
 
-export async function POST(request: Request) {
+export async function POST() {
     // Get the current user from your database
     const clearkUser = await currentUser();
     if (!clearkUser) {

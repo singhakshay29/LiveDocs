@@ -10,7 +10,8 @@ type SearchParamProps = {
   };
 };
 
-const Document = async ({ params: { id } }: SearchParamProps) => {
+const Document = async ({ params }: SearchParamProps) => {
+  const { id } = params;
   const clearkUser = await currentUser();
   if (
     !clearkUser ||
@@ -32,7 +33,12 @@ const Document = async ({ params: { id } }: SearchParamProps) => {
 
   return (
     <main className="flex w-full flex-col items-center">
-      <CollaborativeRoom roomId={id} />
+      <CollaborativeRoom
+        roomId={id}
+        roomMetadata={room.metadata}
+        users={[]}
+        currentUserType={"creator"}
+      />
     </main>
   );
 };

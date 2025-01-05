@@ -1,5 +1,5 @@
 "use client";
-import { Editor } from "@/components/editor/Editor";
+
 import Header from "@/components/Header";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
@@ -9,18 +9,23 @@ import { Input } from "./ui/input";
 import Image from "next/image";
 import { updateDocument } from "@/lib/actions/room.actions";
 import Loader from "./Loader";
+import { Editor } from "./editor/Editor";
+import ShareModal from "./ShareModal";
 
 const CollaborativeRoom = ({
   roomId,
   roomMetadata,
+  users,
+  currentUserType,
 }: CollaborativeRoomProps) => {
-  const currentUserType = "editor";
+  console.log(users);
+  // const currentUserType = "editor";
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const containerRef = useRef(null);
-  const inputRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const updateTitleHandler = async (
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
@@ -103,6 +108,12 @@ const CollaborativeRoom = ({
             </div>
             <div className="flex w-full flex-1 justify-end gap-2 sm:gap-3">
               <ActiveCollaborative />
+              <ShareModal
+                roomId={roomId}
+                collaborators={users}
+                creatorId={roomMetadata.creatorId}
+                currentUserType={currentUserType}
+              />
             </div>
             <SignedOut>
               <SignInButton />
@@ -111,7 +122,7 @@ const CollaborativeRoom = ({
               <UserButton />
             </SignedIn>
           </Header>
-          <Editor />
+          <Editor roomId={roomId} currentUserType={currentUserType} />
         </div>
       </ClientSideSuspense>
     </RoomProvider>

@@ -18,8 +18,6 @@ const CollaborativeRoom = ({
   users,
   currentUserType,
 }: CollaborativeRoomProps) => {
-  console.log(users);
-  // const currentUserType = "editor";
   const [documentTitle, setDocumentTitle] = useState(roomMetadata.title);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -36,7 +36,6 @@ export function Editor(
 ) {
   const status = useEditorStatus();
   const { threads } = useThreads();
-  console.log(roomId, currentUserType, "roomId");
   const initialConfig = liveblocksConfig({
     namespace: "Editor",
     nodes: [HeadingNode],

@@ -2,21 +2,66 @@
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { parseStringify } from "../utils";
+import { liveblocks } from "../liveblocks";
 
 export const getClerkUsers = async ({ userIds }: { userIds: string[] }) => {
     try {
         const { data } = await clerkClient.users.getUserList({
-            emailAddress: userIds
+            emailAddress: userIds,
         });
-        const users = data.map((user: { id: string; firstName: string; lastName: string; emailAddress: { emailAddress: string; }[]; imageUrl: string; }) => ({
+
+        const users = data.map((user) => ({
             id: user.id,
             name: `${user.firstName} ${user.lastName}`,
-            email: user.emailAddress[0].emailAddress,
-            avatar: user.imageUrl
+            email: user.emailAddresses[0].emailAddress,
+            avatar: user.imageUrl,
         }));
+
         const sortedUsers = userIds.map((email) => users.find((user) => user.email === email));
+
         return parseStringify(sortedUsers);
     } catch (error) {
-        console.error(`Error fetching users: ${error}`);
+        console.log(`Error fetching users: ${error}`);
     }
-};
+}
+
+export const getDocumentUsers = async ({ roomId, currentUser, text }: { roomId: string, currentUser: string, text: string }) => {
+    try {
+        const room = await liveblocks.getRoom(roomId);
+
+        const users = Object.keys(room.usersAccesses).filter((email) => email !== currentUser);
+
+        if (text.length) {
+            const lowerCaseText = text.toLowerCase();
+
+            const filteredUsers = users.filter((email: string) => email.toLowerCase().includes(lowerCaseText))
+
+            return parseStringify(filteredUsers);
+        }
+
+        return parseStringify(users);
+    } catch (error) {
+        console.log(`Error fetching document users: ${error}`);
+    }
+}
+
+// export const getClerkUsers = async ({ userIds }: { userIds: string[] }) => {
+//     try {
+//         const client = await clerkClient();
+//         const [email] = userIds;
+//         const usersFetch = await client.users.request({
+//             path: `/users?emailAddress=${encodeURIComponent(email)}`,
+//             method: 'GET',
+//         });
+//         const usersList = await usersFetch.map((user) => ({
+//             id: user.id,
+//             name: `${user.firstName} ${user.lastName}`,
+//             email: user.emailAddresses[0].emailAddress,
+//             avatar: user.imageUrl,
+//         }));
+//         const sortedUsers = userIds.map((email) => usersList.find((user) => user.email === email));
+//         return parseStringify(sortedUsers);
+//     } catch (error) {
+//         console.log(`Error fetching users: ${error}`);
+//     }
+// }

@@ -65,7 +65,7 @@ export const getDocumentsList = async (email: string) => {
     }
 }
 
-export const updateDocumentAccess = async ({ roomId, email, userType }: ShareDocumentParams) => {
+export const updateDocumentAccess = async ({ roomId, email, userType, updatedBy }: ShareDocumentParams) => {
     try {
         const usersAccesses: RoomAccesses = {
             [email]: getAccessType(userType) as AccessType
@@ -73,6 +73,19 @@ export const updateDocumentAccess = async ({ roomId, email, userType }: ShareDoc
         const room = await liveblocks.updateRoom(roomId, { usersAccesses })
         if (room) {
             //TODO: Send Notification to User
+            const notificationId = nanoid();
+            await liveblocks.triggerInboxNotification({
+                userId: email,
+                kind: `$documentAccess`,
+                subjectId: notificationId,
+                activityData: {
+                    userType,
+                    title: `You have been granted ${userType} access to the document by ${updatedBy.name}`,
+                    email: updatedBy.email,
+                    avatar: updatedBy.avatar,
+                    updatedBy: updatedBy.name
+                }
+            })
         }
         revalidatePath(`/documents/${roomId}`);
         return parseStringify(room)

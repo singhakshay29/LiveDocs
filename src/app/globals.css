@@ -154,6 +154,9 @@
   .auth-page {
     @apply flex h-screen w-full flex-col items-center justify-center gap-10;
   }
+  .cl-internal-1dauvpw {
+    @apply hidden;
+  }
 
   /* ======================== Home Page */
   .home-container {
@@ -195,7 +198,12 @@
   background-color: #3371ff;
   color: #fff;
 }
-
+.cl-internal-1hp5nqm {
+  display: none !important;
+}
+.cl-internal-1dauvpw {
+  display: none !important;
+}
 .cl-internal-2gzuzc {
   filter: brightness(1000%);
 }
